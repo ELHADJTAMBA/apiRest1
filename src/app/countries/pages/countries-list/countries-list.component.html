@@ -1,0 +1,72 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8 text-center">Liste des pays</h1>
+  
+  <!-- Barre de recherche et filtre par région -->
+  <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+    <div class="w-full md:w-1/2">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearch()"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5" 
+          placeholder="Rechercher un pays..."
+        >
+      </div>
+    </div>
+    
+    <div class="w-full md:w-1/3">
+      <select 
+        [(ngModel)]="selectedRegion" 
+        (change)="onRegionChange(selectedRegion)"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+      >
+        <option value="">Toutes les régions</option>
+        <option *ngFor="let region of regions" [value]="region">{{ region }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error" class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+    {{ error }}
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+
+  <!-- Liste des pays -->
+  <div *ngIf="!isLoading && !error" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div *ngFor="let country of filteredCountries" 
+         [routerLink]="['/countries', country.cca3]"
+         class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+      <div class="h-40 bg-gray-200 overflow-hidden">
+        <img [src]="country.flags.png" [alt]="'Drapeau de ' + country.name.common" class="w-full h-full object-cover">
+      </div>
+      <div class="p-4">
+        <h3 class="text-lg font-semibold mb-2">{{ country.name.common }}</h3>
+        <p class="text-gray-600 text-sm">
+          <span class="font-medium">Capitale :</span> {{ country.capital ? country.capital[0] : 'N/A' }}
+        </p>
+        <p class="text-gray-600 text-sm">
+          <span class="font-medium">Population :</span> {{ getPopulationString(country.population) }}
+        </p>
+        <p class="text-gray-600 text-sm">
+          <span class="font-medium">Région :</span> {{ country.region }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aucun résultat -->
+  <div *ngIf="!isLoading && !error && filteredCountries.length === 0" class="text-center py-12">
+    <p class="text-gray-500 text-lg">Aucun pays trouvé</p>
+  </div>
+</div>

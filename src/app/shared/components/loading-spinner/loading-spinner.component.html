@@ -1,0 +1,12 @@
+<div [ngClass]="containerClass" class="z-50">
+  <div class="flex flex-col items-center">
+    <div 
+      class="animate-spin rounded-full border-t-transparent"
+      [ngClass]="sizeClass"
+      [class.border-blue-500]="true"
+    ></div>
+    <p *ngIf="message" class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+      {{ message }}
+    </p>
+  </div>
+</div>

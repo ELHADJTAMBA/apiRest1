@@ -1,0 +1,14 @@
+{
+  "/api": {
+    "target": "https://restcountries.com/v3.1",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "headers": {
+      "Accept": "application/json"
+    }
+  }
+}

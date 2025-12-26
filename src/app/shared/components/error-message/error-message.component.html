@@ -1,0 +1,30 @@
+<div 
+  class="rounded-md border p-4 mb-4 transition-all duration-300"
+  [ngClass]="containerClasses"
+  role="alert"
+  [class.flex]="showIcon"
+  [class.items-start]="showIcon">
+  
+  <div *ngIf="showIcon" class="flex-shrink-0">
+    <svg 
+      class="h-5 w-5" 
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke="currentColor"
+      [class.text-red-500]="type === 'error'"
+      [class.text-yellow-500]="type === 'warning'"
+      [class.text-blue-500]="type === 'info'"
+      [class.text-green-500]="type === 'success'">
+      <path 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        stroke-width="2" 
+        [attr.d]="icon" />
+    </svg>
+  </div>
+  
+  <div [class.ml-3]="showIcon">
+    <p class="text-sm font-medium">{{ message }}</p>
+    <ng-content></ng-content>
+  </div>
+</div>

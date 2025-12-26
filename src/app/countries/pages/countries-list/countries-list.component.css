@@ -1,0 +1,51 @@
+/* Animation de chargement */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Style pour les cartes de pays */
+.country-card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.country-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Style pour les images de drapeau */
+.flag-img {
+  height: 160px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Style pour la barre de recherche */
+.search-input {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Style pour le sélecteur de région */
+.region-select {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.region-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Style pour les cartes de pays au survol */
+.country-card:hover .country-name {
+  color: #3b82f6;
+}
