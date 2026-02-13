@@ -3,6 +3,7 @@ import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './core/navbar/navbar.component';
 import { FooterComponent } from './core/footer/footer.component';
 import { ThemeColorService } from './core/services/theme-color.service';
+import { AuthService } from './core/services/auth.service';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private themeColorService: ThemeColorService,
+    private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -31,6 +33,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Créer l'utilisateur admin au démarrage
+    this.authService.createAdminUser();
+
     // Écouter les changements de route pour mettre à jour la couleur du thème
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),

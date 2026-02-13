@@ -30,6 +30,7 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
   isLoadingWeather = false;
   errorMessage = '';
   weatherError = '';
+  mapUrl: SafeResourceUrl = '';
   private subscriptions = new Subscription();
 
   constructor(
@@ -61,6 +62,7 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
     const sub = this.countryService.getCountryByCode(countryCode).subscribe({
       next: (country) => {
         this.country = country;
+        this.generateMapUrl(); // Générer l'URL de la carte une seule fois
         this.loadWeather(country);
         this.isLoading = false;
       },
@@ -160,22 +162,26 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  getSafeMapUrl(): SafeResourceUrl {
-    if (!this.country) return '';
+  generateMapUrl(): void {
+    if (!this.country) return;
     
     let url: string;
     
     if (this.country.latlng && this.country.latlng.length >= 2) {
       const lat = this.country.latlng[0];
       const lng = this.country.latlng[1];
-      // Utilisation d'OpenStreetMap avec Leaflet
-      url = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-5}%2C${lat-5}%2C${lng+5}%2C${lat+5}&layer=mapnik`;
+      // Utilisation de Google Maps pour une meilleure compatibilité
+      url = `https://maps.google.com/maps?q=${lat},${lng}&z=8&output=embed`;
     } else {
       // Fallback vers une recherche par nom de pays si pas de coordonnées
       const query = encodeURIComponent(this.country.name.common);
-      url = `https://www.openstreetmap.org/export/embed.html?q=${query}&layer=mapnik`;
+      url = `https://maps.google.com/maps?q=${query}&z=8&output=embed`;
     }
     
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  getSafeMapUrl(): SafeResourceUrl {
+    return this.mapUrl;
   }
 }

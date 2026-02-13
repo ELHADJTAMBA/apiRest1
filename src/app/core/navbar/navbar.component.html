@@ -6,39 +6,78 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
         </svg>
-        <a routerLink="/" class="text-white text-xl font-bold hover:text-yellow-200 transition-colors duration-200">
+        <a routerLink="/home" class="text-white text-xl font-bold hover:text-yellow-200 transition-colors duration-200">
           API Explorer
         </a>
       </div>
       
       <!-- Navigation principale -->
       <nav class="hidden md:flex items-center space-x-1">
-        <a 
-          routerLink="/" 
-          routerLinkActive="bg-blue-700 text-yellow-200" 
-          [routerLinkActiveOptions]="{exact: true}"
-          class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
-        >
-          Accueil
-        </a>
-        <a 
-          routerLink="/countries" 
-          routerLinkActive="bg-blue-700 text-yellow-200"
-          class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
-        >
-          Pays du monde
-        </a>
-        <a 
-          routerLink="/pokemons" 
-          routerLinkActive="bg-blue-700 text-yellow-200"
-          class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
-        >
-          Pokémon
-        </a>
+        <!-- Menu pour les utilisateurs non connectés -->
+        <ng-container *ngIf="!(authState$ | async)?.isAuthenticated">
+          <a 
+            routerLink="/auth/login" 
+            routerLinkActive="bg-blue-700 text-yellow-200" 
+            class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          >
+            Connexion
+          </a>
+          <a 
+            routerLink="/auth/register" 
+            routerLinkActive="bg-blue-700 text-yellow-200"
+            class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          >
+            Inscription
+          </a>
+        </ng-container>
+
+        <!-- Menu pour les utilisateurs connectés -->
+        <ng-container *ngIf="(authState$ | async)?.isAuthenticated">
+          <a 
+            routerLink="/home" 
+            routerLinkActive="bg-blue-700 text-yellow-200" 
+            [routerLinkActiveOptions]="{exact: true}"
+            class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          >
+            Accueil
+          </a>
+          <a 
+            routerLink="/countries" 
+            routerLinkActive="bg-blue-700 text-yellow-200"
+            class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          >
+            Pays du monde
+          </a>
+          <a 
+            routerLink="/pokemons" 
+            routerLinkActive="bg-blue-700 text-yellow-200"
+            class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          >
+            Pokémon
+          </a>
+          <a 
+            *ngIf="isAdmin()"
+            routerLink="/users/users" 
+            routerLinkActive="bg-blue-700 text-yellow-200"
+            class="px-4 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          >
+            Utilisateurs
+          </a>
+          <button 
+            (click)="logout()"
+            class="px-4 py-2 rounded-md font-medium bg-red-600 hover:bg-red-700 text-white transition-colors duration-200"
+          >
+            Déconnexion
+          </button>
+        </ng-container>
       </nav>
 
       <!-- Bouton menu mobile -->
-      <button class="md:hidden text-white focus:outline-none" (click)="toggleMenu()">
+      <button 
+        class="md:hidden text-white focus:outline-none" 
+        (click)="toggleMenu()"
+        title="Menu"
+      >
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path *ngIf="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
           <path *ngIf="isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -48,31 +87,69 @@
 
     <!-- Menu mobile -->
     <div *ngIf="isMenuOpen" class="md:hidden mt-2 pb-2">
-      <a 
-        routerLink="/" 
-        routerLinkActive="bg-blue-700 text-yellow-200" 
-        [routerLinkActiveOptions]="{exact: true}"
-        class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
-        (click)="closeMenu()"
-      >
-        Accueil
-      </a>
-      <a 
-        routerLink="/countries" 
-        routerLinkActive="bg-blue-700 text-yellow-200"
-        class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
-        (click)="closeMenu()"
-      >
-        Pays du monde
-      </a>
-      <a 
-        routerLink="/pokemons" 
-        routerLinkActive="bg-blue-700 text-yellow-200"
-        class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
-        (click)="closeMenu()"
-      >
-        Pokédex
-      </a>
+      <!-- Menu pour les utilisateurs non connectés -->
+      <ng-container *ngIf="!(authState$ | async)?.isAuthenticated">
+        <a 
+          routerLink="/auth/login" 
+          routerLinkActive="bg-blue-700 text-yellow-200" 
+          class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          (click)="closeMenu()"
+        >
+          Connexion
+        </a>
+        <a 
+          routerLink="/auth/register" 
+          routerLinkActive="bg-blue-700 text-yellow-200"
+          class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          (click)="closeMenu()"
+        >
+          Inscription
+        </a>
+      </ng-container>
+
+      <!-- Menu pour les utilisateurs connectés -->
+      <ng-container *ngIf="(authState$ | async)?.isAuthenticated">
+        <a 
+          routerLink="/home" 
+          routerLinkActive="bg-blue-700 text-yellow-200" 
+          [routerLinkActiveOptions]="{exact: true}"
+          class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          (click)="closeMenu()"
+        >
+          Accueil
+        </a>
+        <a 
+          routerLink="/countries" 
+          routerLinkActive="bg-blue-700 text-yellow-200"
+          class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          (click)="closeMenu()"
+        >
+          Pays du monde
+        </a>
+        <a 
+          routerLink="/pokemons" 
+          routerLinkActive="bg-blue-700 text-yellow-200"
+          class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          (click)="closeMenu()"
+        >
+          Pokémon
+        </a>
+        <a 
+          *ngIf="isAdmin()"
+          routerLink="/users/users" 
+          routerLinkActive="bg-blue-700 text-yellow-200"
+          class="block px-3 py-2 rounded-md font-medium hover:bg-blue-700 hover:text-yellow-200 transition-colors duration-200"
+          (click)="closeMenu()"
+        >
+          Utilisateurs
+        </a>
+        <button 
+          (click)="logout(); closeMenu()"
+          class="w-full text-left px-3 py-2 rounded-md font-medium bg-red-600 hover:bg-red-700 text-white transition-colors duration-200"
+        >
+          Déconnexion
+        </button>
+      </ng-container>
     </div>
   </div>
 </header>

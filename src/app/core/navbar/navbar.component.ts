@@ -1,6 +1,8 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -9,9 +11,17 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   isMenuOpen = false;
   isMobileView = false;
+  authState$: Observable<any>;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.authState$ = this.authService.getAuthState();
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
@@ -45,5 +55,13 @@ export class NavbarComponent {
     if (this.isMobileView) {
       this.isMenuOpen = false;
     }
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
   }
 }

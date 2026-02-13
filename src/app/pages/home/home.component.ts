@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -38,6 +40,16 @@ import { CommonModule } from '@angular/common';
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               Découvrir les Pokémons
+            </a>
+            <a 
+              *ngIf="(authState$ | async)?.isAuthenticated && isAdmin()"
+              routerLink="/users/users"
+              class="btn bg-purple-600 hover:bg-purple-700 text-white inline-flex items-center px-6 py-3 text-lg"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              Gérer les utilisateurs
             </a>
           </div>
         </div>
@@ -110,5 +122,13 @@ import { CommonModule } from '@angular/common';
   styles: []
 })
 export class HomeComponent {
-  // Ajoutez ici toute logique nécessaire pour votre composant
+  authState$: Observable<any>;
+
+  constructor(private authService: AuthService) {
+    this.authState$ = this.authService.getAuthState();
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
 }
